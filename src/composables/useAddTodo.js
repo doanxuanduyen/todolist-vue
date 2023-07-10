@@ -8,13 +8,13 @@ export function useAddTodo(todos, newTodo) {
   const currentDate = ref(new Date());
 
   const addTodo = (newDate) => {
-    const dueDate = new Date(newDate);
+    console.log(newDate);
     if (newTodo.value.trim() !== '') {
       const todo = {
         id: Date.now(),
         completed: false,
         text: newTodo.value,
-        due: dueDate
+        due: newDate
       };
       todos.value.push(todo);
       saveTodos(todos.value);
@@ -22,23 +22,23 @@ export function useAddTodo(todos, newTodo) {
     }
   };
 
-  watch(currentDate, (newCurrentDate) => {
-    todos.value.forEach((todo) => {
-      if (newCurrentDate.getTime() === todo.due.getTime()) {
-        // $toast.warning(`You need to do ${todo.text}`);
-        console.log(123);
-      }
-      else{
-        console.log(newCurrentDate + ' va ' + todo.due);
-      }
-    });
-  });
+  // watch(currentDate, (newCurrentDate) => {
+  //   todos.value.forEach((todo) => {
+  //     if (newCurrentDate.toDateString() === todo.due.toDateString()) {
+  //       // $toast.warning(`You need to do ${todo.text}`);
+  //       console.log(123);
+  //     }
+  //     else{
+  //       console.log(newCurrentDate + ' va ' + todo.due);
+  //     }
+  //   });
+  // });
 
-  onMounted(() => {
-    setInterval(() => {
-      currentDate.value = new Date();
-    }, 1000);
-  });
+  // onMounted(() => {
+  //   setInterval(() => {
+  //     currentDate.value = new Date();
+  //   }, 1000);
+  // });
 
   return {
     addTodo

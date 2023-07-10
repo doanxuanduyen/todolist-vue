@@ -16,16 +16,17 @@ export default {
   setup() {
     const newTodo = ref('')
     const todos = ref(getTodos())
-    const { addTodo } = useAddTodo(todos, newTodo)
     const { deleteTodo, refreshTodos } = useDeleteTodo(todos)
     const { handleCompletion, refreshCompleted } = useCompleted(todos)
     const dateSelected = ref(new Date())
     const date = ref()
-    watch(date, ( newDate) =>{
-      if(newDate !== undefined){
-        addTodo(newDate)
-      }
-    })
+    const checkCalendar = () => {
+      watch(date, (newDate) => {
+        if (newDate !== undefined) {
+          addTodo(newDate)
+        }
+      })
+    }
     watch(refreshCompleted, (newValue) => {
       if (newValue) {
         getTodos()
@@ -38,6 +39,7 @@ export default {
         refreshTodos.value = false
       }
     })
+    const { addTodo } = useAddTodo(todos, newTodo, checkCalendar)
     return {
       newTodo,
       todos,
@@ -52,23 +54,21 @@ export default {
 </script>
 <template>
   <main id="main">
-    <div>
-      <div class="input">
-        <button class="btn" type="button">
-          <VueDatePicker v-model="date" enable-second></VueDatePicker>
-        </button>
-        <input
-          type="text"
-          id="input"
-          placeholder="Add a new task"
-          :value="newTodo"
-          @input="newTodo = $event.target.value"
-          @keyup.enter="addTodo"
-        />
-        <button class="btn" type="button" @click="addTodo">
-          <font-awesome-icon icon="add" />
-        </button>
-      </div>
+    <div class="input">
+      <button class="btn" type="button">
+        <VueDatePicker v-model="date" enable-second></VueDatePicker>
+      </button>
+      <input
+        type="text"
+        id="input"
+        placeholder="Add a new task"
+        :value="newTodo"
+        @input="newTodo = $event.target.value"
+        @keyup.enter="addTodo"
+      />
+      <button class="btn" type="button" @click="addTodo">
+        <font-awesome-icon icon="add" />
+      </button>
     </div>
     <ul>
       <todo-item
@@ -83,7 +83,11 @@ export default {
 </template>
 
 <style>
-main#main div .input {
+main {
+  position: relative;
+}
+main#main .input {
+  position: inherit;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
   background: #1e293b;
   border-bottom: 0.2rem solid #0f172a;
@@ -92,7 +96,8 @@ main#main div .input {
   align-items: center;
   margin-bottom: 3rem;
 }
-main#main div .input input {
+
+main#main .input input {
   border: none;
   outline: none;
   background: #1e293b;
@@ -101,7 +106,7 @@ main#main div .input input {
   width: 90%;
   font-size: 1.2rem;
 }
-main#main div .input .btn {
+main#main .input .btn {
   background: #1e293b;
   color: rgb(156, 163, 175);
   cursor: pointer;
@@ -111,17 +116,18 @@ main#main div .input .btn {
   padding: 2rem;
 }
 
-main#main div .input .btn div input.dp__pointer {
+main#main .input .btn div input.dp__pointer {
   display: none;
 }
-main#main div .input .btn div svg.dp__clear_icon {
+main#main .input .btn div svg.dp__clear_icon {
   display: none;
 }
-main#main div .input .btn div .dp__menu {
+main#main .input .btn div .dp__menu {
   top: 19px !important;
   left: 17px !important;
 }
 ul {
+  position: inherit;
   padding: 0;
   height: 50rem;
   overflow-y: overlay;
@@ -144,5 +150,16 @@ ul {
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: var(--secondary-color);
+}
+@media (max-width: 535px) {
+  main {
+    width: 32rem;
+  }
+  main#main .input {
+    width: 95%;
+  }
+  ul {
+    width: 95%;
+  }
 }
 </style>

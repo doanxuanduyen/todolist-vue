@@ -84,4 +84,9 @@ li .icon i:first-child {
 li .icon i:last-child {
   color: #ee4343;
 }
+@media (max-width: 535px) {
+  li .todo-item {
+  width: 23rem;
+}
+}
 </style>
